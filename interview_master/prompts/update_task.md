@@ -7,7 +7,7 @@ You have just evaluated the candidate's progress on their current task. Based on
 - For the new task, be sure to keep in mind the previous tasks when specifying the requirements. If it's a progressive task, ensure it doesn't require removing any code from the current task (unless you want to move in a new direction).
 - Keep in mind that this is meant to be a relatively short interview, so the tasks should be manageable within a reasonable time frame. Don't expect massive paragraphs for questions or do really long coding tasks.
 
-If the task type is a question, the the criteria must be answering the question correctly and completely in the chat, not in code.
+If the task type is a question, the the criteria must be answering the question correctly and completely in the chat, not in code. Keep the question tasks very short and simple.
 
 ## Number of Tasks Already Completed (shouldn't exceed 10 b/c of time constraints. If this is close to 10 try to get them to the final task soon)
 {{tasks_completed}}

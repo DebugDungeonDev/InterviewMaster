@@ -1,6 +1,7 @@
 import yaml
 from llm.llm import LLM
 from interview_master.task import Task, TaskType
+from llm.utils import remove_code_blocks
 
 class Scenario:
     def __init__(self, llm: LLM, scenario_file: str):
@@ -54,9 +55,7 @@ class Scenario:
 
         # Remove the ``` from the starting code
 
-        self.starting_code = self.starting_code.replace("```python", "")
-        self.starting_code = self.starting_code.replace("```", "")
-        self.starting_code = self.starting_code.strip()
+        self.starting_code = remove_code_blocks(self.starting_code)
 
 
 if __name__ == "__main__":

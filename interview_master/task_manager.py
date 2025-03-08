@@ -6,7 +6,7 @@ from frontend.frontend_update import FrontendUpdate
 from interview_master.task import Task, TaskType
 from llm.llm import LLM
 from llm.chat import Message
-from llm.utils import str_to_bool
+from llm.utils import str_to_bool, remove_code_blocks
 
 from typing import List
 import copy
@@ -92,7 +92,7 @@ class TaskManager:
             success_description=response['new_task_success_criteria'],
         )
 
-        fru.code = response['new_task_starting_code']
+        fru.code = remove_code_blocks(response['new_task_starting_code'])
         fru.code_output = ""
 
         return fru
