@@ -93,8 +93,12 @@ with gr.Blocks() as demo:
                     scale=1,  # Control width, not height
                     lines=5  # Increase the height by increasing the number of lines
                 )
-                digital_human = gr.Markdown(
-                    "_[NVIDIA Digital Human Placeholder]_",
+                digital_human = gr.Video(
+                    value="couch.mp4",   # path or filename
+                    label="Digital Human",
+                    interactive=False,          # do not allow user to interact with the video  
+                    autoplay=True,            # start playing automatically
+                    loop=False                # do not loop, plays only once
                 )
 
             # Bottom Half - Chat Field

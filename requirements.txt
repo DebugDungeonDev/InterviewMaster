@@ -3,3 +3,4 @@ streamlit-code-editor
 google-genai    
 protobuf~=5.29.3
 gradio~=5.20.1
+networkx
