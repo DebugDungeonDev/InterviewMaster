@@ -1,0 +1,3 @@
+"""
+Manages keeping track of the current tasks, the end tasks, the previous tasks, etc...
+"""
