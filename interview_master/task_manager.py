@@ -34,7 +34,7 @@ class TaskManager:
             if self.final_task.completed:
                 return
 
-        self._update_task(llm, fru, response)
+        fru = self._update_task(llm, fru, response)
         
         fru.chat.messages.append(Message(
             False,
@@ -46,7 +46,7 @@ class TaskManager:
         return fru
 
     
-    def _update_task(self, llm: LLM, fru: FrontendUpdate, check_response: dict):
+    def _update_task(self, llm: LLM, fru: FrontendUpdate, check_response: dict) -> FrontendUpdate:
 
         last_3_chat_messages = fru.chat.get_last_n_messages_str(3)
 
@@ -91,6 +91,11 @@ class TaskManager:
             description=response['new_task_description'],
             success_description=response['new_task_success_criteria'],
         )
+
+        fru.code = response['new_task_starting_code']
+        fru.code_output = ""
+
+        return fru
 
     def check_final_task_complete(self, llm: LLM, fru: FrontendUpdate):
         """

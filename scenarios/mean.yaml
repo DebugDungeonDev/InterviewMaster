@@ -1,0 +1,7 @@
+name: Simple Mean
+description: |
+  The interview candidate must write a python function which takes in a list of numbers and returns the mean.
+  They must also explain what a mean is and the time complexity of their function.
+max_tasks: 3
+language: python
+
