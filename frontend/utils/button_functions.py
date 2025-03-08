@@ -33,8 +33,12 @@ def submit_code(code, state):
     state["code"] = code
     state["code_output"] = run_code(code)
 
-    FRU = IM.handle_code_submission(Gemini("llm/clients/google.key"), FrontendUpdate(chat, state["code"], state["code_output"], state["current_task"]) )
-    return state, state["code"], state["code_output"], state["chat"].to_history()
+    FRU = IM.handle_code_submission(Gemini("llm/clients/google.key"), FrontendUpdate(state["chat"], state["code"], state["code_output"], state["current_task"]))
+    state = update_state_from_fru(state, FRU)
+
+    task_details = f"**{FRU.current_task.name}**\n\n{FRU.current_task.description}"
+
+    return state["code"], state["code_output"], task_details, state["chat"].to_history(), state, ""
 
 
 def handle_chat(user_input, state):

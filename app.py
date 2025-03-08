@@ -121,11 +121,13 @@ with gr.Blocks() as demo:
 
                 # Send button to trigger response
                 send_button = gr.Button("Send",scale=1)
+                user_input.submit(fn=handle_chat, inputs=[user_input, state],
+                                  outputs=[code_box, output_box, task_display, chatbot, state, user_input, digital_human])
 
     # Button click functions
     save_btn.click(fn=save_code, inputs=[code_box, state], outputs=[state, code_box, output_box])
     run_btn.click(fn=run_the_code, inputs=[code_box, state], outputs=[state, code_box, output_box])
-    submit_btn.click(fn=submit_code, inputs=[code_box, state], outputs=[state, code_box, output_box, chatbot])
+    submit_btn.click(fn=submit_code, inputs=[code_box, state], outputs=[code_box, output_box, task_display, chatbot, state,digital_human])
     send_button.click(fn=handle_chat, inputs=[user_input, state],outputs=[code_box, output_box, task_display, chatbot, state, user_input, digital_human])
     load_button.click(fn=update_selected_scenario, inputs=[scenario_dropdown, state], outputs=[code_box, output_box, task_display, chatbot, state,digital_human])
 
