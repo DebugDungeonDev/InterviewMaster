@@ -12,6 +12,21 @@ class InterviewMaster:
         self.scenario: Scenario = scenario
         self.task_manager: TaskManager = TaskManager(self.scenario.first_task, self.scenario.final_task)
 
+    def handle_start(self, llm: LLM) -> FrontendUpdate:
+        """
+        Handle the start of the interview.
+        """
+        
+        # Get the first task
+        fru = FrontendUpdate(
+            Chat(),
+            self.scenario.starting_code,
+            "",
+            self.scenario.first_task
+        )
+
+        return fru
+
     def handle_chat_message(self, llm: LLM, fru: FrontendUpdate) -> FrontendUpdate:
         """
         Update the interview master when a new message is sent.

@@ -6,3 +6,5 @@ lambda/*
 
 # But keep lambda_function.py
 !lambda/lambda_function.py
+
+.venv/
