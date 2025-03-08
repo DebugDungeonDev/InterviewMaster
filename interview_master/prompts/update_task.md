@@ -21,6 +21,9 @@ If the task type is a question, the the criteria must be answering the question 
 ## End Task Success Criteria
 {{end_success_description}}
 
+## List of previously completed tasks
+{{completed_tasks}}
+
 ## Current Code
 ```python
 {{code}}

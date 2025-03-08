@@ -55,6 +55,7 @@ class TaskManager:
             "end_name": self.final_task.name,
             "end_description": self.final_task.description,
             "end_success_description": self.final_task.success_description,
+            "completed_tasks": "\n".join([task.name for task in self.previous_tasks if task.completed]),
             "code": fru.code,
             "output": fru.code_output,
             "chat_messages": last_3_chat_messages,
