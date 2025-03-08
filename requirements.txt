@@ -1,3 +1,5 @@
 streamlit~=1.43.1
 streamlit-code-editor
 google-genai    
+protobuf~=5.29.3
+gradio~=5.20.1
