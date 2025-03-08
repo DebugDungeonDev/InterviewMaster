@@ -32,7 +32,8 @@ def run_the_code(code, state):
 def submit_code(code, state):
     state["code"] = code
     state["code_output"] = run_code(code)
-    # RUN AI CALL FROM ETHAN
+
+    FRU = IM.handle_code_submission(Gemini("llm/clients/google.key"), FrontendUpdate(chat, state["code"], state["code_output"], state["current_task"]) )
     return state, state["code"], state["code_output"], state["chat"].to_history()
 
 
@@ -50,7 +51,7 @@ def handle_chat(user_input, state):
     task_details = f"**{FRU.current_task.name}**\n\n{FRU.current_task.description}"
 
     # Return updated chat history and clear user input
-    return state["code"], state["code_output"], task_details, state["chat"].to_history(), state, ""
+    return state["code"], state["code_output"], task_details, state["chat"].to_history(), state, "", ""
 
 
 def update_selected_scenario(selected_scenario, state):
@@ -59,8 +60,10 @@ def update_selected_scenario(selected_scenario, state):
     #iterate through the scenarios folder until find a name that matches
     scenarios_path = "scenarios"
     scenario_files = glob.glob(os.path.join(scenarios_path, "*.yaml"))
+    print("Scenario files found:", scenario_files)  # Debugging
     for scenario_file in scenario_files:
         # store it as name : path
+        print("Checking scenario file:", scenario_file)
         with open(scenario_file, "r") as f:
             scenario_data = yaml.safe_load(f)
             if scenario_data["name"] == selected_scenario:
@@ -79,4 +82,4 @@ def update_selected_scenario(selected_scenario, state):
 
 
 
-    return state["code"], state["code_output"], task_details, state["chat"].to_history(), state
+    return state["code"], state["code_output"], task_details, state["chat"].to_history(), state, ""
