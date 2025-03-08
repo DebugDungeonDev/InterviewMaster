@@ -23,6 +23,13 @@ with gr.Blocks() as demo:
         "chat": Chat(),
         "current_task": "Your current task will appear here.",
         "scenario_name": "Calculator Application",
+        "video": """
+            <video id="digital_human" 
+                   autoplay muted controls 
+                   style="width: 100%; height: auto; border-radius: 10px;">
+                <source src="http://localhost:5000/combined_feed" type="video/mp4">
+            </video>
+"""
     }
     state = gr.State(initial_state)
 
@@ -38,10 +45,10 @@ with gr.Blocks() as demo:
             scenario_names[scenario_data["name"]] = scenario_file
 
     gr.Markdown("# InterviewMaster")
-
+    
     # Left Column - Wider IDE + task display
     with gr.Row():
-        with gr.Column(scale=2):  # Left column a bit wider
+        with gr.Column(scale=2):  # Left column for IDE, tasks, and buttons
             # Scenario dropdown and load button
             with gr.Row(equal_height=True):
                 scenario_dropdown = gr.Dropdown(
@@ -54,17 +61,10 @@ with gr.Blocks() as demo:
                 )
                 load_button = gr.Button("Load Scenario", scale=1)
 
-            # Task display above the code editor
-            # task_display = gr.Textbox(
-            #     value=state.value['current_task'],
-            #     label="Task",
-            #     interactive=False,
-            #     scale=1,  # Control width, not height
-            #     lines=5  # Increase the height by increasing the number of lines
-            # )
-            task_display = gr.Markdown(label="Task Display", value=state.value['current_task'], container=True,show_label=True)
+            # Task display
+            task_display = gr.Markdown(label="Task Display", value=state.value['current_task'], container=True, show_label=True)
 
-            # Code editor and buttons
+            # Code editor
             code_box = gr.Code(
                 value=state.value["code"],
                 language="python",
@@ -74,11 +74,13 @@ with gr.Blocks() as demo:
                 max_lines=25,
             )
 
+            # Buttons
             with gr.Row():
                 save_btn = gr.Button("Save", size="small")
                 run_btn = gr.Button("Run", size="small")
                 submit_btn = gr.Button("Submit", size="small")
 
+            # Output box
             output_box = gr.Code(
                 value=state.value["code_output"],
                 language="python",
@@ -87,33 +89,41 @@ with gr.Blocks() as demo:
             )
 
         # Right Column - Digital Human and Chat
-        with gr.Column(scale=1):
-            # Digital Human placeholder on top
-            digital_human = gr.Textbox(
-                value="Placeholder",
-                label="Digital Human",
-                interactive=False,
-                scale=1,
-                lines=7
-            )
+        with gr.Column(scale=1):  # Digital Human and Chatbot should be in a separate column
+            # Digital Human Stream
+            # digital_human = gr.HTML(
+            # value="""
+            # <img id="video_stream" src="http://localhost:5000/video_feed" 
+            #     style="width: 100%; height: auto; border-radius: 10px;">
+
+            # <audio id="audio_stream" autoplay muted controls style="width: 100%;">
+            #     <source src="http://localhost:5000/audio_feed" type="audio/mp3">
+            #     </audio>
+            # """,
+            # label="Digital Human Live Stream"
+            # )
+
+            digital_human = gr.HTML(
+            value=state.value["video"],
+            label="Digital Human Live Stream"
+        )
 
             # Chatbot area below Digital Human
             with gr.Row():
                 history = state.value["chat"].to_history()
-                chatbot = gr.Chatbot(history, type="messages", label="AI Chat Response", height=245)  # Adjust the height as needed
+                chatbot = gr.Chatbot(history, type="messages", label="AI Chat Response", height=245)
 
             # User input area
             with gr.Row():
                 user_input = gr.Textbox(label="Message to Bot:", placeholder="Type here...", scale=4)
                 user_input.submit(fn=handle_chat, inputs=[user_input, state],
-                                  outputs=[code_box, output_box, task_display, chatbot, state, user_input,
-                                           digital_human])
+                                outputs=[code_box, output_box, task_display, chatbot, state, user_input])
+
 
     # Button click functions
     save_btn.click(fn=save_code, inputs=[code_box, state], outputs=[state, code_box, output_box])
     run_btn.click(fn=run_the_code, inputs=[code_box, state], outputs=[state, code_box, output_box])
-    submit_btn.click(fn=submit_code, inputs=[code_box, state], outputs=[code_box, output_box, task_display, chatbot, state, digital_human])
+    submit_btn.click(fn=submit_code, inputs=[code_box, state], outputs=[code_box, output_box, task_display, chatbot, state])
     load_button.click(fn=update_selected_scenario, inputs=[scenario_dropdown, state], outputs=[code_box, output_box, task_display, chatbot, state, digital_human])
-
 demo.launch()
 

@@ -38,7 +38,7 @@ def submit_code(code, state):
 
     task_details = f"### Task {IM.task_manager.previous_tasks.__len__() + 1}: **{FRU.current_task.name}**\n\n{FRU.current_task.description}"
 
-    return state["code"], state["code_output"], task_details, state["chat"].to_history(), state, ""
+    return state["code"], state["code_output"], task_details, state["chat"].to_history(), state
 
 
 def handle_chat(user_input, state):
@@ -54,7 +54,7 @@ def handle_chat(user_input, state):
 
     task_details = f"### Task {IM.task_manager.previous_tasks.__len__() + 1}: **{FRU.current_task.name}**\n\n{FRU.current_task.description}"
     # Return updated chat history and clear user input
-    return state["code"], state["code_output"], task_details, state["chat"].to_history(), state, "", ""
+    return state["code"], state["code_output"], task_details, state["chat"].to_history(), state, ""
 
 
 def update_selected_scenario(selected_scenario, state):
@@ -84,4 +84,4 @@ def update_selected_scenario(selected_scenario, state):
 
 
 
-    return state["code"], state["code_output"], task_details, state["chat"].to_history(), state, ""
+    return state["code"], state["code_output"], task_details, state["chat"].to_history(), state, state['video']
