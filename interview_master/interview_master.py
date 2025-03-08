@@ -48,7 +48,7 @@ class InterviewMaster:
         # Give a response to the candidate
         fru.chat.messages.append(Message(
             False,
-            llm.get_multiturn_response(fru.chat, 5, self.task_manager.current_task)
+            llm.get_multiturn_response(fru.chat, 5, self.task_manager.current_task, fru.code)
         ))
 
         return fru

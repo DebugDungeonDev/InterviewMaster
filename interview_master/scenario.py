@@ -30,7 +30,7 @@ class Scenario:
                                                 vars)
         
         # Create the first task
-        task_type = TaskType.CODE if response['first_task_type'].lower() == "code" else TaskType.Question
+        task_type = TaskType.CODE if response['first_task_type'].lower() == "code" else TaskType.QUESTION
         first_task = Task(
             llm=self.llm,
             task_type=task_type,

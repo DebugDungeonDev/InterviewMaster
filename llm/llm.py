@@ -16,13 +16,15 @@ class LLM:
         """
         raise NotImplementedError
     
-    def get_multiturn_response(self, chat: Chat, n: int, current_task):
+    def get_multiturn_response(self, chat: Chat, n: int, current_task, code):
         """
         Takes the n last messages from the chat and returns a response.
         """
         messages = chat.get_last_n_messages_str(n)
         prompt = "Current task for the candidate:\n"
         prompt += str(current_task.to_dict()) + "\n"
+        prompt += "Current written code:\n"
+        prompt += code + "\n"
         prompt += "Chat between an technical interviewer and a candidate:\n"
         prompt += messages
         
