@@ -68,7 +68,7 @@ if __name__ == "__main__":
     from llm.clients.gemini import Gemini
     from llm.chat import Chat 
     llm = Gemini("llm/clients/google.key")
-    scenario = Scenario(llm, "scenarios/calcapp.yaml")
+    scenario = Scenario(llm, "scenarios/medianstocks.yaml")
     im = InterviewMaster(scenario)
     fru = im.handle_start()
     print(fru)
