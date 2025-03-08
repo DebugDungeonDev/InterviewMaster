@@ -1,20 +1,33 @@
-import io
 import sys
+import io
+import traceback
 
 def run_code(code: str) -> str:
-    # Redirect stdout to capture print statements
+    """
+    Executes the given code string and returns the output (stdout) or
+    a traceback (with line numbers) if an exception occurs.
+
+    Note: This version doesn't worry about security. It just compiles and executes the code.
+    """
     old_stdout = sys.stdout
     new_stdout = io.StringIO()
-    sys.stdout = new_stdout
 
     try:
-        exec(code)
-    except Exception as e:
-        return str(e)
+        # Capture stdout
+        sys.stdout = new_stdout
+        
+        # First compile the code to catch syntax errors with line numbers
+        compiled_code = compile(code, "<user_code>", "exec")
+        
+        # Execute the compiled code in a fresh dictionary
+        exec(compiled_code, {})
+    except Exception:
+        # Return the full traceback (including line numbers)
+        error_trace = traceback.format_exc()
+        return error_trace
     finally:
-        # Reset stdout
+        # Always restore stdout
         sys.stdout = old_stdout
 
-    # Get the captured output
-    output = new_stdout.getvalue()
-    return output
+    # If everything runs fine, return what was printed
+    return new_stdout.getvalue()

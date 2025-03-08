@@ -58,5 +58,6 @@ You must respond in the following output format using the following tags (only p
 <new_task_description>Task Description</new_task_description>
 <new_task_success_criteria>Task Success Criteria</new_task_success_criteria>
 <new_task_type>Question</new_task_type> or <new_task_type>Code</new_task_type>
+<new_task_needs_code>True</new_task_needs_code> or <new_task_needs_code>False</new_task_needs_code>
 <new_task_starting_code>Starting Code</new_task_starting_code>
 <reason>Nice explanation to canidate why they passed or not (You tense)</reason>

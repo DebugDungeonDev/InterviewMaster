@@ -92,8 +92,9 @@ class TaskManager:
             description=response['new_task_description'],
             success_description=response['new_task_success_criteria'],
         )
-
-        fru.code = remove_code_blocks(response['new_task_starting_code'])
+        
+        if str_to_bool(response["new_task_needs_code"]):
+            fru.code = remove_code_blocks(response['new_task_starting_code'])
         fru.code_output = ""
 
         return fru

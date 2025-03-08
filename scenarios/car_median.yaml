@@ -1,0 +1,9 @@
+name: Car Median
+description: |
+  The interview candidate must write a python class called CarHandler which has the following methods:
+  - add_car(num: int)   # num is the number of people in the car
+  - get_median() -> int # returns the median number of people in the cars
+  They should have to optimize the get_median method to be O(1) time complexity.
+max_tasks: 3
+language: python
+
