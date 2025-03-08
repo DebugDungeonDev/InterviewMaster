@@ -6,16 +6,25 @@ from interview_master.task_manager import TaskManager
 from frontend.frontend_update import FrontendUpdate
 from interview_master.scenario import Scenario
 from llm.llm import LLM
+import logging
 
 class InterviewMaster:
-    def __init__(self, scenario: Scenario):
+    def __init__(self, scenario: Scenario, logger: logging.Logger = None):
         self.scenario: Scenario = scenario
         self.task_manager: TaskManager = TaskManager(self.scenario.first_task, self.scenario.final_task)
+        self.logger = logger
+
+        if self.logger is None:
+            self.logger = logging.getLogger("InterviewMaster")
+            self.logger.setLevel(logging.INFO)
+            self.logger.addHandler(logging.StreamHandler())
 
     def handle_start(self) -> FrontendUpdate:
         """
         Handle the start of the interview.
         """
+
+        self.logger.info("Starting the interview.")
         
         # Get the first task
         fru = FrontendUpdate(

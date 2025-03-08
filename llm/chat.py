@@ -39,6 +39,4 @@ class Chat:
         return history
     
     def __str__(self):
-        print("length of messages: ", len(self.messages))
-        print("print of messages: ", self.messages)
         return self.get_last_n_messages_str(len(self.messages))

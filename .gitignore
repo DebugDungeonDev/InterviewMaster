@@ -8,3 +8,4 @@ lambda/*
 !lambda/lambda_function.py
 
 .venv/
+*.mp3
