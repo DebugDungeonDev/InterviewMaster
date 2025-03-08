@@ -52,6 +52,12 @@ class Scenario:
         self.final_task = final_task
         self.starting_code = response['starting_code']
 
+        # Remove the ``` from the starting code
+
+        self.starting_code = self.starting_code.replace("```python", "")
+        self.starting_code = self.starting_code.replace("```", "")
+        self.starting_code = self.starting_code.strip()
+
 
 if __name__ == "__main__":
     from llm.clients.gemini import Gemini
