@@ -1,0 +1,11 @@
+name: Real-Time Median Stock Price
+description: |
+  The interview candidate must implement a system to track stock prices 
+  and efficiently compute the median stock price in real time. Given a 
+  stream of stock price updates (as a list of numbers), the candidate must:
+    - Implement a function to insert new prices efficiently.
+    - Implement a function to return the median stock price at any time.
+  The candidate should demonstrate an understanding of data structures 
+  such as heaps, sorting, and median-finding algorithms.
+max_tasks: 10
+language: python
