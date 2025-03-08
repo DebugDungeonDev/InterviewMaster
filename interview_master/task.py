@@ -59,6 +59,13 @@ class Task:
         Checks if the question is correct.
         Returns the Completed or not (bool) and the reason (str).
         """
+
+        if len(chat.messages) == 0:
+            return {
+                "completed": False,
+                "reason": "No messages in the chat."
+            }
+
         vars = self.to_dict()
         vars["last_chat_response"] = chat.messages[-1].message
 
