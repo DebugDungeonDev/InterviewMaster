@@ -1,11 +1,19 @@
 import io
 import sys
+import os
+import glob
 
 import gradio as gr
 import json
+
+import yaml
+
 from llm.chat import Chat
+from interview_master.scenario import Scenario
+from interview_master.interview_master import InterviewMaster
 from frontend import frontend_update
-from frontend.utils.button_functions import save_code, run_the_code, submit_code, handle_chat
+from frontend.utils.button_functions import save_code, run_the_code, submit_code, handle_chat, update_selected_scenario
+from llm.clients.gemini import Gemini
 
 # Build the Gradio interface
 with gr.Blocks() as demo:
@@ -13,16 +21,39 @@ with gr.Blocks() as demo:
         "code": "",
         "code_output": "",
         "chat": Chat(),
-        "current_task": "Your current task will appear here."
+        "current_task": "Your current task will appear here.",
+        "scenario_name": "Calculator Application",
     }
     state = gr.State(initial_state)
+
+    #look in the scnearios folder nad for each scneario yaml file, access its name and then keep a list of its path and its name
+    scenarios_path = "scenarios"
+    scenario_files = glob.glob(os.path.join(scenarios_path, "*.yaml"))
+
+    # in the yaml files there will be a key called name, get the value of that key
+    scenario_names = {}
+    for scenario_file in scenario_files:
+        # store it as name : path
+        with open(scenario_file, "r") as f:
+            scenario_data = yaml.safe_load(f)
+            scenario_names[scenario_data["name"]] = scenario_file
+
+
+
+
 
     gr.Markdown("# Debug Dungeon")
 
     with gr.Row():
         # Left Column - Code Editor
         with gr.Column(scale=1):
-            gr.Dropdown()
+            #dropdown with scenario names
+            scenario_dropdown = gr.Dropdown([scenario_name for scenario_name in scenario_names.keys()], label="Select Scenario", value=list(scenario_names.keys())[0], interactive=True, type="value", scale=1)
+            scenario_dropdown.change(fn=update_selected_scenario, inputs=[scenario_dropdown, state], outputs=[state])
+
+            IM = InterviewMaster(Scenario(Gemini("llm/clients/google.key"), scenario_names[state.value["scenario_name"]]))
+            state.value["chat"] = IM.handle_start(Gemini("llm/clients/google.key")).chat
+
             code_box = gr.Code(
                 value=state.value["code"],
                 language="python",
