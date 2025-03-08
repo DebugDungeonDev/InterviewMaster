@@ -1,0 +1,10 @@
+name: Calculator Application
+description: |
+  The interview candidate must write a 4-function calculator application which defines
+  4 functions (add, subtract, multiply, divide) and a main function which takes
+  in two numbers, and a string representing the operation to perform, and returns
+  the result of the operation. The candidate must also demonstrate a strong understanding
+  of Python functions and their use-case in programming.
+max_tasks: 10
+language: python
+

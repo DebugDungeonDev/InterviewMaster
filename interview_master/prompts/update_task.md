@@ -4,7 +4,7 @@ You have just evaluated the candidate's progress on their current task. Based on
 
 - If the candidate has completed the current task successfully, decide whether they should advance to a more challenging task, move directly to the final task, or stay on the same task if further refinement is needed.
 - If the current task was too difficult, assign a simpler task to help them progress.
-- If the candidate has successfully completed the final task, indicate this clearly.
+- For the new task, be sure to keep in mind the previous tasks when specifying the requirements. If it's a progressive task, ensure it doesn't require removing any code from the current task (unless you want to move in a new direction).
 
 ## Number of Tasks Already Completed (shouldn't exceed 10 b/c of time constraints. If this is close to 10 try to get them to the final task soon)
 {{tasks_completed}}
@@ -23,7 +23,7 @@ You have just evaluated the candidate's progress on their current task. Based on
 {{code}}
 ```
 
-## Currnet Output
+## Current Output
 {{output}}
 
 ## Last few chat messages
@@ -46,8 +46,7 @@ You have just evaluated the candidate's progress on their current task. Based on
 
 ## Output Format
 
-You must respond in the following output format using the following tags (only provide a new task if stay is False and final_complete is False):
-<final_complete>True</final_complete> or <final_complete>False</final_complete>
+You must respond in the following output format using the following tags (only provide a new task if stay is False):
 <stay>True</stay> or <stay>False</stay>   
 <new_task_name>Task Name</new_task_name>
 <new_task_description>Task Description</new_task_description>
