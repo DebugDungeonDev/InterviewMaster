@@ -33,3 +33,7 @@ def handle_chat(user_input, state):
 
     # Return updated chat history and clear user input
     return chat.to_history(), "", state
+
+def update_selected_scenario(selected_scenario, state):
+    state.value["scenario_name"] = selected_scenario
+    return state
