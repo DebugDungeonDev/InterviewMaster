@@ -36,7 +36,7 @@ def submit_code(code, state):
     FRU = IM.handle_code_submission(Gemini("llm/clients/google.key"), FrontendUpdate(state["chat"], state["code"], state["code_output"], state["current_task"]))
     state = update_state_from_fru(state, FRU)
 
-    task_details = f"**{FRU.current_task.name}**\n\n{FRU.current_task.description}"
+    task_details = f"### Task {IM.task_manager.previous_tasks.__len__() + 1}: **{FRU.current_task.name}**\n\n{FRU.current_task.description}"
 
     return state["code"], state["code_output"], task_details, state["chat"].to_history(), state, ""
 
@@ -52,8 +52,7 @@ def handle_chat(user_input, state):
     FRU = IM.handle_chat_message(Gemini("llm/clients/google.key"), FrontendUpdate(chat, state["code"], state["code_output"], state["current_task"]))
     state = update_state_from_fru(state, FRU)
 
-    task_details = f"**{FRU.current_task.name}**\n\n{FRU.current_task.description}"
-
+    task_details = f"### Task {IM.task_manager.previous_tasks.__len__() + 1}: **{FRU.current_task.name}**\n\n{FRU.current_task.description}"
     # Return updated chat history and clear user input
     return state["code"], state["code_output"], task_details, state["chat"].to_history(), state, "", ""
 
@@ -80,8 +79,7 @@ def update_selected_scenario(selected_scenario, state):
     IM = InterviewMaster(Scenario(Gemini("llm/clients/google.key"), selected_scenario_file))
     FRU = IM.handle_start()
 
-    task_details = f"**{FRU.current_task.name}**\n\n{FRU.current_task.description}"
-
+    task_details = f"### Task {IM.task_manager.previous_tasks.__len__() + 1}: **{FRU.current_task.name}**\n\n{FRU.current_task.description}"
     state = update_state_from_fru(state, FRU)
 
 
