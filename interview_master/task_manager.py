@@ -5,6 +5,7 @@ Manages keeping track of the current tasks, the end tasks, the previous tasks, e
 from frontend.frontend_update import FrontendUpdate
 from interview_master.task import Task, TaskType
 from llm.llm import LLM
+from llm.chat import Message
 from llm.utils import str_to_bool
 
 from typing import List
@@ -21,17 +22,26 @@ class TaskManager:
     
         self.previous_tasks: List[Task] = []  # The tasks that have been shown to the candidate (not all completed necessarily)
 
-    def update(self, llm: LLM, fru: FrontendUpdate):  
+    def update(self, llm: LLM, fru: FrontendUpdate) -> FrontendUpdate:  
+        """
+        Updates the current task and returns a message to the candidate explaining the change and why.
+        """
         response = self.current_task.check_complete(chat=fru.chat, code=fru.code, output=fru.code_output)
 
         if self.current_task.completed:
             # Check if the final task is complete
             final_response = self.check_final_task_complete(llm, fru)
-            print("Final response:", final_response)
             if self.final_task.completed:
                 return
 
         self._update_task(llm, fru, response)
+        
+        fru.chat.messages.append(Message(
+            False,
+            response['reason']
+        ))
+        
+        return fru
 
     
     def _update_task(self, llm: LLM, fru: FrontendUpdate, check_response: dict):

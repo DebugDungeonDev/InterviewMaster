@@ -3,6 +3,7 @@ Abstract llm class that can handle prompts and return a response to the user.
 """
 
 from typing import Dict
+from llm.chat import Chat, Message
 
 
 class LLM:
@@ -14,6 +15,21 @@ class LLM:
         Returns a basic response to the prompt.
         """
         raise NotImplementedError
+    
+    def get_multiturn_response(self, chat: Chat, n: int, current_task):
+        """
+        Takes the n last messages from the chat and returns a response.
+        """
+        messages = chat.get_last_n_messages_str(n)
+        prompt = "Current task for the candidate:\n"
+        prompt += str(current_task.to_dict()) + "\n"
+        prompt += "Chat between an technical interviewer and a candidate:\n"
+        for message in messages:
+            name = "Candidate" if message.isHuman else "Interviewer"
+            prompt += f"{name}: {message.message}\n"
+        
+        return self.get_basic_response(prompt)
+
     
     def get_response_prompt_file(self, prompt_file: str, vars: Dict = {}) -> Dict:
         """

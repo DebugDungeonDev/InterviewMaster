@@ -87,6 +87,7 @@ class Task:
             "name": self.name,
             "description": self.description,
             "success_description": self.success_description,
+            "completed": self.completed,
         }
     
 

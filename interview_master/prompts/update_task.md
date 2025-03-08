@@ -52,4 +52,4 @@ You must respond in the following output format using the following tags (only p
 <new_task_description>Task Description</new_task_description>
 <new_task_success_criteria>Task Success Criteria</new_task_success_criteria>
 <new_task_type>Question</new_task_type> or <new_task_type>Code</new_task_type>
-<reason>Reason for new task</reason>
+<reason>Reason + Explanation for new task to give to the candidate</reason>
