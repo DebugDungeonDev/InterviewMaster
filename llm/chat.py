@@ -14,6 +14,15 @@ class Chat:
     def __init__(self):
         self.messages: List[Message] = []
 
+    def get_last_bot_message(self):
+        """
+        Get the last message from the bot.
+        """
+        for msg in reversed(self.messages):
+            if not msg.isHuman:
+                return msg.message
+        return ""
+
     def get_last_n_messages_str(self, n: int):
         """
         Get the last n messages as a string, ordered from oldest to newest.

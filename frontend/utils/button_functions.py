@@ -11,13 +11,29 @@ from llm.chat import Message
 from llm.clients.gemini import Gemini
 import requests
 import random 
+import subprocess
+import json
+import shlex
+
 
 IM: InterviewMaster = None
 
+safe_chars = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', " "]
+
 def update_video_feed(state):
-    # Request to 
-    new_path = "couch.mp4"
-    requests.post("http://localhost:5000/switch_video", json={"path": new_path})
+    # Run the curl command using a subprocess
+    text = state["chat"].get_last_bot_message()
+    
+    safe_escaped_text = [c for c in text if c.lower() in safe_chars]
+    safe_escaped_text = "".join(safe_escaped_text)
+
+    command = f"""
+    curl -X POST http://localhost:5000/switch_video -H "Content-Type: application/json" -d '{{"text": "{safe_escaped_text}"}}'
+    """
+
+    print("Command being sent:\n", command)
+
+    subprocess.run(command, shell=True)
 
     r = random.randint(0, 1000000)
 
@@ -73,7 +89,10 @@ def handle_chat(user_input, state):
 
     task_details = f"### Task {IM.task_manager.previous_tasks.__len__() + 1}: **{FRU.current_task.name}**\n\n{FRU.current_task.description}"
     # Return updated chat history and clear user input
-    return state["code"], state["code_output"], task_details, state["chat"].to_history(), state, ""
+
+    update_video_feed(state)
+
+    return state["code"], state["code_output"], task_details, state["chat"].to_history(), state, "", state["video"]
 
 
 def update_selected_scenario(selected_scenario, state):
@@ -92,8 +111,6 @@ def update_selected_scenario(selected_scenario, state):
                 selected_scenario_file = scenario_file
                 break
 
-    update_video_feed(state)
-
     state["scenario_name"] = selected_scenario  # No need for `.value`
 
     # Load scenario into InterviewMaster
@@ -105,4 +122,4 @@ def update_selected_scenario(selected_scenario, state):
 
 
 
-    return state["code"], state["code_output"], task_details, state["chat"].to_history(), state, state['video']
+    return state["code"], state["code_output"], task_details, state["chat"].to_history(), state # , state['video']
