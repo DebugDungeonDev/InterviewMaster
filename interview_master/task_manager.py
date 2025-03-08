@@ -40,6 +40,8 @@ class TaskManager:
             False,
             response['reason']
         ))
+
+        fru.current_task = self.current_task
         
         return fru
 
