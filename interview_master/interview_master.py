@@ -70,9 +70,8 @@ class InterviewMaster:
         """
         Update the interview master when code is submitted.
         """
-        
-        # Check if they completed the code task
-        fru = self.task_manager.update(llm, fru)
+        if self.task_manager.current_task.task_type == TaskType.CODE:
+            fru = self.task_manager.update(llm, fru)
 
         return fru
         
