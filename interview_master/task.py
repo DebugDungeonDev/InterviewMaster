@@ -1,5 +1,6 @@
 
 from llm.llm import LLM
+from llm.utils import str_to_bool
 from llm.chat import Chat, Message
 from typing import List
 import enum 
@@ -20,15 +21,25 @@ class Task:
         self.description = description
         self.success_description = success_description
 
-    def check_complete(self, code: str, output: str, chat: Chat):
+        self.completed = False 
+
+    def check_complete(self, code: str = "", output: str = "", chat: Chat = None):
+        response = None
         if self.task_type == TaskType.CODE:
-            return self.check_code_complete(code, output, chat)
+            response = self._check_code_complete(code, output, chat)
         elif self.task_type == TaskType.QUESTION:
-            return self.check_question_complete(chat)
+            response = self._check_question_complete(chat)
         else:
             return NotImplementedError
         
-    def check_code_complete(self, code: str, output: str):
+        response = self._completed_to_bool(response)
+
+        if response["completed"]:
+            self.completed = True
+
+        return response
+        
+    def _check_code_complete(self, code: str, output: str):
         """
         Checks if the code is correct.
         Returns the Completed or not (bool) and the reason (str).
@@ -41,11 +52,9 @@ class Task:
             vars,
         )
 
-        response = self._completed_to_bool(response)
-
         return response  # Dict{"completed": bool, "reason": str}
     
-    def check_question_complete(self, chat: Chat):
+    def _check_question_complete(self, chat: Chat):
         """
         Checks if the question is correct.
         Returns the Completed or not (bool) and the reason (str).
@@ -60,8 +69,6 @@ class Task:
             vars,
         )
 
-        response = self._completed_to_bool(response)
-
         return response # Dict{"completed": bool, "reason": str}
     
     def _completed_to_bool(self, response: dict):
@@ -70,8 +77,7 @@ class Task:
         """
 
          # Convert completed to a boolean
-        assert response["completed"].lower() in ["true", "false"], "Completed should be either true or false, got: " + response["completed"]
-        response["completed"] = response["completed"].lower() == "true"
+        response["completed"] = str_to_bool(response["completed"])
 
         return response
 
@@ -130,6 +136,6 @@ if __name__ == "__main__":
     chat = Chat()
     chat.messages.append(Message(True, "Functions are used to encapsulate code and reuse it."))
     
-    print(task.check_question_complete(chat))
+    print(task.check_complete("", "", chat))
 
 
