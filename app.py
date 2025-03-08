@@ -7,6 +7,7 @@ import gradio as gr
 import json
 
 import yaml
+from networkx.algorithms.distance_measures import center
 
 from llm.chat import Chat
 from interview_master.scenario import Scenario
@@ -41,18 +42,22 @@ with gr.Blocks() as demo:
 
 
 
-
     gr.Markdown("# Debug Dungeon")
 
     with gr.Row():
         # Left Column - Code Editor
         with gr.Column(scale=1):
             #dropdown with scenario names
-            scenario_dropdown = gr.Dropdown([scenario_name for scenario_name in scenario_names.keys()], label="Select Scenario", value=list(scenario_names.keys())[0], interactive=True, type="value", scale=1)
-            scenario_dropdown.change(fn=update_selected_scenario, inputs=[scenario_dropdown, state], outputs=[state])
-
-            IM = InterviewMaster(Scenario(Gemini("llm/clients/google.key"), scenario_names[state.value["scenario_name"]]))
-            state.value["chat"] = IM.handle_start(Gemini("llm/clients/google.key")).chat
+            with gr.Row():
+                scenario_dropdown = gr.Dropdown(
+                    [scenario_name for scenario_name in scenario_names.keys()],
+                    label="Select Scenario",
+                    value=list(scenario_names.keys())[0],
+                    interactive=True,
+                    type="value",
+                    scale=1
+                )
+                load_button = gr.Button("Load Scenario", scale=1)
 
             code_box = gr.Code(
                 value=state.value["code"],
@@ -108,7 +113,7 @@ with gr.Blocks() as demo:
     save_btn.click(fn=save_code, inputs=[code_box, state], outputs=[state, code_box, output_box])
     run_btn.click(fn=run_the_code, inputs=[code_box, state], outputs=[state, code_box, output_box])
     submit_btn.click(fn=submit_code, inputs=[code_box, state], outputs=[state, code_box, output_box, chatbot])
-    send_button.click(fn=handle_chat, inputs=[user_input, state],outputs=[chatbot, user_input, state]
-    )
+    send_button.click(fn=handle_chat, inputs=[user_input, state],outputs=[chatbot, user_input, state])
+    load_button.click(fn=update_selected_scenario, inputs=[scenario_dropdown, state], outputs=[code_box, task_display])
 
 demo.launch()
