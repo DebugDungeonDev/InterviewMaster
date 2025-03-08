@@ -1,6 +1,6 @@
 
 from llm.chat import Chat, Message
-from interview_master.task.task import Task, TaskType
+from interview_master.task import Task, TaskType
 from interview_master.task_manager import TaskManager
 
 from frontend.frontend_update import FrontendUpdate
