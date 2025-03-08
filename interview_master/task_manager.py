@@ -81,7 +81,7 @@ class TaskManager:
         self.previous_tasks.append(copy.deepcopy(self.current_task))
 
         # Update current task using output from the LLM
-        new_task_type = TaskType.CODE if response['new_task_type'].lower() == "code" else TaskType.Question
+        new_task_type = TaskType.CODE if response['new_task_type'].lower() == "code" else TaskType.QUESTION
         self.current_task = Task(
             llm=llm,
             task_type=new_task_type,

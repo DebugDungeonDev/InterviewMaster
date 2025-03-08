@@ -45,10 +45,23 @@ class InterviewMaster:
         if self.task_manager.current_task.task_type == TaskType.QUESTION:
             fru = self.task_manager.update(llm, fru)
 
+        vars = {
+            "name": fru.current_task.name,
+            "description": fru.current_task.description,
+            "success_description": fru.current_task.success_description,
+            "last_chat_messages": fru.chat.get_last_n_messages_str(5),
+            "code": fru.code,
+            "output": fru.code_output,
+        }
+        response = llm.get_response_prompt_file(
+            "interview_master/prompts/general_chatting.md",
+            vars
+        )
+
         # Give a response to the candidate
         fru.chat.messages.append(Message(
             False,
-            llm.get_multiturn_response(fru.chat, 5, self.task_manager.current_task, fru.code)
+            response['response']
         ))
 
         return fru
