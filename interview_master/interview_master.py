@@ -1,12 +1,13 @@
 
 from llm.chat import Chat, Message
 from interview_master.task.task import Task
+from interview_master.task_manager import TaskManager
 
 from frontend.frontend_update import FrontendUpdate
 
 class InterviewMaster:
     def __init__(self):
-        self.current_task = None
+        self.task_manager: TaskManager = TaskManager()
 
     def handle_chat_message(self, update: FrontendUpdate):
         """
