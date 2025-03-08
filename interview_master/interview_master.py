@@ -4,7 +4,7 @@ from interview_master.task import Task, TaskType
 from interview_master.task_manager import TaskManager
 
 from frontend.frontend_update import FrontendUpdate
-from scenario import Scenario
+from interview_master.scenario import Scenario
 from llm.llm import LLM
 
 class InterviewMaster:
