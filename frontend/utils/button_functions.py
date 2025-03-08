@@ -3,11 +3,21 @@ import os
 
 import yaml
 
+from frontend.frontend_update import FrontendUpdate
 from frontend.run_code import run_code
 from interview_master.interview_master import InterviewMaster
 from interview_master.scenario import Scenario
 from llm.chat import Message
 from llm.clients.gemini import Gemini
+
+IM: InterviewMaster = None
+
+def update_state_from_fru(state, fru):
+    state["chat"] = fru.chat
+    state["code"] = fru.code
+    state["code_output"] = fru.code_output
+    state["current_task"] = fru.current_task
+    return state
 
 
 def save_code(code, state):
@@ -27,23 +37,24 @@ def submit_code(code, state):
 
 
 def handle_chat(user_input, state):
+    global IM
     chat = state["chat"]  # Get the chat from state
 
     # Append user input to chat
     chat.messages.append(Message(True, user_input))  # True means it's from the human
 
     # Simulate an AI response (replace with your AI model here)
-    ai_response = f"AI Response to: {user_input}"
-    chat.messages.append(Message(False, ai_response))  # False means it's from the AI
+    FRU = IM.handle_chat_message(Gemini("llm/clients/google.key"), FrontendUpdate(chat, state["code"], state["code_output"], state["current_task"]))
+    state = update_state_from_fru(state, FRU)
 
-    # Update the state with the new chat
-    state["chat"] = chat
+    task_details = f"**{FRU.current_task.name}**\n\n{FRU.current_task.description}"
 
     # Return updated chat history and clear user input
-    return chat.to_history(), "", state
+    return state["code"], state["code_output"], task_details, state["chat"].to_history(), state, ""
 
 
 def update_selected_scenario(selected_scenario, state):
+    global IM
     # Get scenario names
     #iterate through the scenarios folder until find a name that matches
     scenarios_path = "scenarios"
@@ -62,12 +73,10 @@ def update_selected_scenario(selected_scenario, state):
     IM = InterviewMaster(Scenario(Gemini("llm/clients/google.key"), selected_scenario_file))
     FRU = IM.handle_start()
 
-    print(FRU)
+    task_details = f"**{FRU.current_task.name}**\n\n{FRU.current_task.description}"
 
-    # Update state values
-    state["chat"] = FRU.chat
-    state["code"] = FRU.code
-    state["code_output"] = FRU.code_output
-    state["current_task"] = FRU.current_task
+    state = update_state_from_fru(state, FRU)
 
-    return state["code"], state["current_task"]
+
+
+    return state["code"], state["code_output"], task_details, state["chat"].to_history(), state
