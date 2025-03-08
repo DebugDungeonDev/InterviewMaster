@@ -57,6 +57,8 @@ def switch_video():
     data = request.get_json(force=True)
     new_path = data.get("path")
 
+    print("New path:", new_path)
+
     if not new_path:
         return jsonify({"error": "No `path` provided."}), 400
 

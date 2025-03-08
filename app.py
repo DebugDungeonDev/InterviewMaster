@@ -23,13 +23,15 @@ with gr.Blocks() as demo:
         "chat": Chat(),
         "current_task": "Your current task will appear here.",
         "scenario_name": "Calculator Application",
-        "video": """
-            <video id="digital_human" 
-                   autoplay muted controls 
-                   style="width: 100%; height: auto; border-radius: 10px;">
-                <source src="http://localhost:5000/combined_feed" type="video/mp4">
-            </video>
-"""
+        "video":  """
+    <video id="digital_human" 
+           autoplay 
+           muted 
+           controls 
+           style="width: 100%; height: auto; border-radius: 10px;">
+        <source src="http://localhost:5000/combined_feed?nocache=1" type="video/mp4">
+    </video>
+    """
     }
     state = gr.State(initial_state)
 

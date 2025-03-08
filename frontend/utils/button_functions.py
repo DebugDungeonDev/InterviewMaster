@@ -9,8 +9,27 @@ from interview_master.interview_master import InterviewMaster
 from interview_master.scenario import Scenario
 from llm.chat import Message
 from llm.clients.gemini import Gemini
+import requests
+import random 
 
 IM: InterviewMaster = None
+
+def update_video_feed(state):
+    # Request to 
+    new_path = "couch.mp4"
+    requests.post("http://localhost:5000/switch_video", json={"path": new_path})
+
+    r = random.randint(0, 1000000)
+
+    state['video'] = f"""
+    <video id="digital_human" 
+           autoplay 
+           muted 
+           controls 
+           style="width: 100%; height: auto; border-radius: 10px;">
+        <source src="http://localhost:5000/combined_feed?nocache={r}" type="video/mp4">
+    </video>
+    """
 
 def update_state_from_fru(state, fru):
     state["chat"] = fru.chat
@@ -72,6 +91,8 @@ def update_selected_scenario(selected_scenario, state):
             if scenario_data["name"] == selected_scenario:
                 selected_scenario_file = scenario_file
                 break
+
+    update_video_feed(state)
 
     state["scenario_name"] = selected_scenario  # No need for `.value`
 
