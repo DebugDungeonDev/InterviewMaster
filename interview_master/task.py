@@ -26,7 +26,7 @@ class Task:
     def check_complete(self, code: str = "", output: str = "", chat: Chat = None):
         response = None
         if self.task_type == TaskType.CODE:
-            response = self._check_code_complete(code, output, chat)
+            response = self._check_code_complete(code, output)
         elif self.task_type == TaskType.QUESTION:
             response = self._check_question_complete(chat)
         else:

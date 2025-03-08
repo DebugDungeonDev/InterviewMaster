@@ -8,32 +8,40 @@ from llm.llm import LLM
 from llm.utils import str_to_bool
 
 from typing import List
+import copy
 
 class TaskManager:
-    def __init__(self):
-        self.current_task: Task = None
+    def __init__(self, start_task: Task, final_task: Task):
+        self.current_task: Task = start_task
 
         # The final task, kept a secret from the candidate. This is the end goal, 
         # but we'll let the candidate go off course but guide them back eventually.
-        self.final_task: Task = None  
-        self.previous_tasks: List[Task] = []  # The tasks that have been shown to the candidate (not all completed necessarily)
-
-    def update(self, update: FrontendUpdate):  
-        response = self.current_task.check_complete(chat=update.chat, code=update.code, output=update.code_output)
-        self._update_task(update.llm, response)
+        self.final_task: Task = final_task
 
     
-    def _update_task(self, llm: LLM, check_response: dict):
+        self.previous_tasks: List[Task] = []  # The tasks that have been shown to the candidate (not all completed necessarily)
+
+    def update(self, llm: LLM, fru: FrontendUpdate):  
+        response = self.current_task.check_complete(chat=fru.chat, code=fru.code, output=fru.code_output)
+        self._update_task(llm, fru, response)
+
+    
+    def _update_task(self, llm: LLM, fru: FrontendUpdate, check_response: dict):
+
+        last_3_chat_messages = fru.chat.get_last_n_messages_str(3)
+
         vars = {
+            "tasks_completed": str(len(self.previous_tasks)),
             "end_name": self.final_task.name,
             "end_description": self.final_task.description,
             "end_success_description": self.final_task.success_description,
-            "current_code": self.current_task.code,
-            "current_output": self.current_task.code_output,
+            "code": fru.code,
+            "output": fru.code_output,
+            "chat_messages": last_3_chat_messages,
             "name": self.current_task.name,
             "description": self.current_task.description,
             "success_description": self.current_task.success_description,
-            "completed": check_response['completed'],
+            "completed": str(check_response['completed']),
             "reason": check_response['reason'],
         }
         response = llm.get_response_prompt_file("interview_master/prompts/update_task.md",
@@ -52,10 +60,10 @@ class TaskManager:
             return  # Keep the current task
         
         # Move to the next task
-        self.previous_tasks.append(self.current_task.copy())
+        self.previous_tasks.append(copy.deepcopy(self.current_task))
 
         # Update current task using output from the LLM
-        new_task_type = TaskType.Code if response['new_task_type'].lower() == "code" else TaskType.Question
+        new_task_type = TaskType.CODE if response['new_task_type'].lower() == "code" else TaskType.Question
         self.current_task = Task(
             llm=llm,
             task_type=new_task_type,
@@ -64,3 +72,36 @@ class TaskManager:
             success_description=response['new_task_success_criteria'],
         )
 
+
+if __name__ == "__main__":
+
+    from llm.clients.gemini import Gemini
+    from llm.chat import Chat 
+
+    llm = Gemini("llm/clients/google.key")
+
+    t1 = Task(llm, TaskType.CODE, "Task 1",
+                "Write a function that takes two numbers and returns the sum",
+                "The code has a function that returns the sum of two numbers.")
+    
+    final_task = Task(llm, TaskType.CODE, "Final Task",
+                "Write a calculator script that has add, subtract, multiply, and divide functions",
+                "The code meets the functions required and runs well with proof as shown by the candidate's print statements.")
+    
+    # Test the TaskManager
+    tm = TaskManager(t1, final_task)
+    
+    code = """
+    def sum(a, b):
+        return a + b
+
+    print(sum(1, 2))
+    """
+
+    code_output = "3"
+
+    fru = FrontendUpdate(Chat(), code, code_output, t1)
+
+    tm.update(llm, fru)
+
+    print(tm.current_task.to_dict())

@@ -25,7 +25,16 @@ class LLM:
             prompt = f.read()
 
         for key, value in vars.items():
-            prompt = prompt.replace(key, value)
+            # Raise error if nothing to replace
+            if key not in prompt:
+                raise ValueError(f"Key {key} not found in prompt file {prompt_file}")
+            
+            key_aug = "{{" + key + "}}"
+            prompt = prompt.replace(key_aug, value)
+
+        # Raise error if any keys are left
+        if "{{" in prompt or "}}" in prompt:
+            raise ValueError(f"Keys left in prompt file {prompt_file} {prompt}")
 
         response = self.get_basic_response(prompt)
 
