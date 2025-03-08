@@ -77,7 +77,7 @@ class TaskManager:
         if response['stay']:
             if self.current_task.completed:
                 print("TASK COMPLETED BUT STAYING, VERY SUSPICIOUS (╯°□°）╯︵ ┻━┻ ")
-            return  # Keep the current task
+            return fru # Keep the current task
         
         # Move to the next task
         self.previous_tasks.append(copy.deepcopy(self.current_task))
