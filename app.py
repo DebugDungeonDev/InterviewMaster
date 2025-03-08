@@ -7,7 +7,6 @@ import gradio as gr
 import json
 
 import yaml
-from networkx.algorithms.distance_measures import center
 
 from llm.chat import Chat
 from interview_master.scenario import Scenario
@@ -57,6 +56,7 @@ with gr.Blocks() as demo:
                     type="value",
                     scale=1
                 )
+
                 load_button = gr.Button("Load Scenario", scale=1)
 
             code_box = gr.Code(
@@ -117,7 +117,7 @@ with gr.Blocks() as demo:
     save_btn.click(fn=save_code, inputs=[code_box, state], outputs=[state, code_box, output_box])
     run_btn.click(fn=run_the_code, inputs=[code_box, state], outputs=[state, code_box, output_box])
     submit_btn.click(fn=submit_code, inputs=[code_box, state], outputs=[state, code_box, output_box, chatbot])
-    send_button.click(fn=handle_chat, inputs=[user_input, state],outputs=[chatbot, user_input, state])
-    load_button.click(fn=update_selected_scenario, inputs=[scenario_dropdown, state], outputs=[code_box, task_display])
+    send_button.click(fn=handle_chat, inputs=[user_input, state],outputs=[code_box, output_box, task_display, chatbot, state, user_input])
+    load_button.click(fn=update_selected_scenario, inputs=[scenario_dropdown, state], outputs=[code_box, output_box, task_display, chatbot, state])
 
 demo.launch()
