@@ -37,20 +37,20 @@ with gr.Blocks() as demo:
             scenario_data = yaml.safe_load(f)
             scenario_names[scenario_data["name"]] = scenario_file
 
-    gr.Markdown("# Debug Dungeon")
+    gr.Markdown("# InterviewMaster")
 
     # Left Column - Wider IDE + task display
     with gr.Row():
         with gr.Column(scale=2):  # Left column a bit wider
             # Scenario dropdown and load button
-            with gr.Row():
+            with gr.Row(equal_height=True):
                 scenario_dropdown = gr.Dropdown(
                     [scenario_name for scenario_name in scenario_names.keys()],
                     label="Select Scenario",
                     value=list(scenario_names.keys())[0],
                     interactive=True,
                     type="value",
-                    scale=1
+                    scale=5
                 )
                 load_button = gr.Button("Load Scenario", scale=1)
 
@@ -104,8 +104,7 @@ with gr.Blocks() as demo:
 
             # User input area
             with gr.Row():
-                user_input = gr.Textbox(label="Type your message (make sure to save before sending a chat!):", placeholder="Type here...", scale=4)
-                send_button = gr.Button("Send", scale=1)
+                user_input = gr.Textbox(label="Message to Bot:", placeholder="Type here...", scale=4)
                 user_input.submit(fn=handle_chat, inputs=[user_input, state],
                                   outputs=[code_box, output_box, task_display, chatbot, state, user_input,
                                            digital_human])
@@ -114,7 +113,6 @@ with gr.Blocks() as demo:
     save_btn.click(fn=save_code, inputs=[code_box, state], outputs=[state, code_box, output_box])
     run_btn.click(fn=run_the_code, inputs=[code_box, state], outputs=[state, code_box, output_box])
     submit_btn.click(fn=submit_code, inputs=[code_box, state], outputs=[code_box, output_box, task_display, chatbot, state, digital_human])
-    send_button.click(fn=handle_chat, inputs=[user_input, state], outputs=[code_box, output_box, task_display, chatbot, state, user_input, digital_human])
     load_button.click(fn=update_selected_scenario, inputs=[scenario_dropdown, state], outputs=[code_box, output_box, task_display, chatbot, state, digital_human])
 
 demo.launch()
