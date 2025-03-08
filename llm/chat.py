@@ -16,16 +16,19 @@ class Chat:
 
     def get_last_n_messages_str(self, n: int):
         """
-        Get the last n messages as a string.
+        Get the last n messages as a string, ordered from oldest to newest.
         """
         
-        # Utilize the isHuman flag to mark in the string
+        # Slice the last n messages in the correct order
+        last_messages = self.messages[-n:]  # This preserves order (oldest to newest)
+        
         out = ""
-        capped_n = min(n, len(self.messages))
-        for i in range(1, capped_n + 1):
-            out += "Candidate: " if self.messages[-i].isHuman else "Interviewer: "
-            out += self.messages[-i].message + "\n"
+        for msg in last_messages:
+            out += "Candidate: " if msg.isHuman else "Interviewer: "
+            out += msg.message + "\n"
+    
         return out
+
     
     def to_history(self):
         history = []
@@ -34,3 +37,8 @@ class Chat:
             content = msg.message
             history.append({"role": role, "content": content})
         return history
+    
+    def __str__(self):
+        print("length of messages: ", len(self.messages))
+        print("print of messages: ", self.messages)
+        return self.get_last_n_messages_str(len(self.messages))

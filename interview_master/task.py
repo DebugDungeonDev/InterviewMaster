@@ -87,8 +87,11 @@ class Task:
             "name": self.name,
             "description": self.description,
             "success_description": self.success_description,
-            "completed": self.completed,
+            "completed": str(self.completed),
         }
+    
+    def __str__(self):
+        return str(self.to_dict())
     
 
 if __name__ == "__main__":

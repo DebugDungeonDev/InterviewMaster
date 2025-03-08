@@ -24,9 +24,7 @@ class LLM:
         prompt = "Current task for the candidate:\n"
         prompt += str(current_task.to_dict()) + "\n"
         prompt += "Chat between an technical interviewer and a candidate:\n"
-        for message in messages:
-            name = "Candidate" if message.isHuman else "Interviewer"
-            prompt += f"{name}: {message.message}\n"
+        prompt += messages
         
         return self.get_basic_response(prompt)
 

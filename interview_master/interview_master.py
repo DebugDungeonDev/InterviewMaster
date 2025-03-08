@@ -12,7 +12,7 @@ class InterviewMaster:
         self.scenario: Scenario = scenario
         self.task_manager: TaskManager = TaskManager(self.scenario.first_task, self.scenario.final_task)
 
-    def handle_start(self, llm: LLM) -> FrontendUpdate:
+    def handle_start(self) -> FrontendUpdate:
         """
         Handle the start of the interview.
         """
@@ -54,4 +54,19 @@ class InterviewMaster:
 
         return fru
         
-        
+
+if __name__ == "__main__":
+    from llm.clients.gemini import Gemini
+    from llm.chat import Chat 
+    llm = Gemini("llm/clients/google.key")
+    scenario = Scenario(llm, "scenarios/calcapp.yaml")
+    im = InterviewMaster(scenario)
+    fru = im.handle_start()
+    print(fru)
+    fru.chat.messages.append(Message(True, "Hello, I need help getting started."))
+    fru = im.handle_chat_message(llm, fru)
+    print(fru)
+
+    fru.code = "def add(a, b):\n    return a + b"
+    fru = im.handle_code_submission(llm, fru)
+    print(fru)
