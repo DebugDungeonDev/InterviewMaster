@@ -26,27 +26,23 @@ with gr.Blocks() as demo:
     }
     state = gr.State(initial_state)
 
-    #look in the scnearios folder nad for each scneario yaml file, access its name and then keep a list of its path and its name
+    # Look in the scenarios folder and get all YAML files
     scenarios_path = "scenarios"
     scenario_files = glob.glob(os.path.join(scenarios_path, "*.yaml"))
 
-    # in the yaml files there will be a key called name, get the value of that key
+    # Create dictionary of scenario names and their paths
     scenario_names = {}
     for scenario_file in scenario_files:
-        # store it as name : path
         with open(scenario_file, "r") as f:
             scenario_data = yaml.safe_load(f)
             scenario_names[scenario_data["name"]] = scenario_file
 
-
-
-
     gr.Markdown("# Debug Dungeon")
 
+    # Left Column - Wider IDE + task display
     with gr.Row():
-        # Left Column - Code Editor
-        with gr.Column(scale=1):
-            #dropdown with scenario names
+        with gr.Column(scale=2):  # Left column a bit wider
+            # Scenario dropdown and load button
             with gr.Row():
                 scenario_dropdown = gr.Dropdown(
                     [scenario_name for scenario_name in scenario_names.keys()],
@@ -56,9 +52,19 @@ with gr.Blocks() as demo:
                     type="value",
                     scale=1
                 )
-
                 load_button = gr.Button("Load Scenario", scale=1)
 
+            # Task display above the code editor
+            # task_display = gr.Textbox(
+            #     value=state.value['current_task'],
+            #     label="Task",
+            #     interactive=False,
+            #     scale=1,  # Control width, not height
+            #     lines=5  # Increase the height by increasing the number of lines
+            # )
+            task_display = gr.Markdown(label="Task Display", value=state.value['current_task'], container=True,show_label=True)
+
+            # Code editor and buttons
             code_box = gr.Code(
                 value=state.value["code"],
                 language="python",
@@ -67,7 +73,6 @@ with gr.Blocks() as demo:
                 lines=10,
                 max_lines=25,
             )
-
 
             with gr.Row():
                 save_btn = gr.Button("Save", size="small")
@@ -78,57 +83,39 @@ with gr.Blocks() as demo:
                 value=state.value["code_output"],
                 language="python",
                 label="Code Output",
-                lines=5
+                lines=2
             )
 
-
-        # Right Column - Split into 3 areas
+        # Right Column - Digital Human and Chat
         with gr.Column(scale=1):
-            # Top Half - Split into two
-            with gr.Row():
-                task_display = gr.Textbox(
-                    value=state.value['current_task'],
-                    label="Task",
-                    interactive=False,
-                    scale=1,  # Control width, not height
-                    lines=5  # Increase the height by increasing the number of lines
-                )
-                # do a placeholder text box for digital human
-                # Placeholder for Digital Human
+            # Digital Human placeholder on top
+            digital_human = gr.Textbox(
+                value="Placeholder",
+                label="Digital Human",
+                interactive=False,
+                scale=1,
+                lines=7
+            )
 
-                digital_human = gr.Textbox(
-                    value="Placeholder",
-                    label="Digital Human",
-                    interactive=False,
-                    scale=1
-                )
-                # digital_human = gr.Video(
-                #     value="couch.mp4",   # path or filename
-                #     label="Digital Human",
-                #     interactive=False,          # do not allow user to interact with the video
-                #     autoplay=True,            # start playing automatically
-                #     loop=False                # do not loop, plays only once
-                # )
-
-            # Bottom Half - Chat Field
+            # Chatbot area below Digital Human
             with gr.Row():
                 history = state.value["chat"].to_history()
                 chatbot = gr.Chatbot(history, type="messages", label="AI Chat Response", height=245)  # Adjust the height as needed
+
+            # User input area
             with gr.Row():
-
-            # Textbox for user input
                 user_input = gr.Textbox(label="Type your message (make sure to save before sending a chat!):", placeholder="Type here...", scale=4)
-
-                # Send button to trigger response
-                send_button = gr.Button("Send",scale=1)
+                send_button = gr.Button("Send", scale=1)
                 user_input.submit(fn=handle_chat, inputs=[user_input, state],
-                                  outputs=[code_box, output_box, task_display, chatbot, state, user_input, digital_human])
+                                  outputs=[code_box, output_box, task_display, chatbot, state, user_input,
+                                           digital_human])
 
     # Button click functions
     save_btn.click(fn=save_code, inputs=[code_box, state], outputs=[state, code_box, output_box])
     run_btn.click(fn=run_the_code, inputs=[code_box, state], outputs=[state, code_box, output_box])
-    submit_btn.click(fn=submit_code, inputs=[code_box, state], outputs=[code_box, output_box, task_display, chatbot, state,digital_human])
-    send_button.click(fn=handle_chat, inputs=[user_input, state],outputs=[code_box, output_box, task_display, chatbot, state, user_input, digital_human])
-    load_button.click(fn=update_selected_scenario, inputs=[scenario_dropdown, state], outputs=[code_box, output_box, task_display, chatbot, state,digital_human])
+    submit_btn.click(fn=submit_code, inputs=[code_box, state], outputs=[code_box, output_box, task_display, chatbot, state, digital_human])
+    send_button.click(fn=handle_chat, inputs=[user_input, state], outputs=[code_box, output_box, task_display, chatbot, state, user_input, digital_human])
+    load_button.click(fn=update_selected_scenario, inputs=[scenario_dropdown, state], outputs=[code_box, output_box, task_display, chatbot, state, digital_human])
 
 demo.launch()
+
