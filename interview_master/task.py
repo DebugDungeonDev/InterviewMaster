@@ -28,7 +28,7 @@ class Task:
         else:
             return NotImplementedError
         
-    def check_code_complete(self, code: str, output: str, chat: Chat):
+    def check_code_complete(self, code: str, output: str):
         """
         Checks if the code is correct.
         Returns the Completed or not (bool) and the reason (str).
@@ -41,6 +41,8 @@ class Task:
             vars,
         )
 
+        response = self._completed_to_bool(response)
+
         return response  # Dict{"completed": bool, "reason": str}
     
     def check_question_complete(self, chat: Chat):
@@ -48,7 +50,7 @@ class Task:
         Checks if the question is correct.
         Returns the Completed or not (bool) and the reason (str).
         """
-        vars = self.to_dict
+        vars = self.to_dict()
         vars["last_chat_response"] = chat.messages[-1].message
 
         assert chat.messages[-1].isHuman, "Last message should be from the user."
@@ -58,7 +60,20 @@ class Task:
             vars,
         )
 
+        response = self._completed_to_bool(response)
+
         return response # Dict{"completed": bool, "reason": str}
+    
+    def _completed_to_bool(self, response: dict):
+        """
+        Converts the completed field in the response to a boolean.
+        """
+
+         # Convert completed to a boolean
+        assert response["completed"].lower() in ["true", "false"], "Completed should be either true or false, got: " + response["completed"]
+        response["completed"] = response["completed"].lower() == "true"
+
+        return response
 
 
     def to_dict(self):
@@ -67,7 +82,54 @@ class Task:
             "description": self.description,
             "success_description": self.success_description,
         }
-        
+    
+
+if __name__ == "__main__":
+    # Test of the system
+    from llm.clients.gemini import Gemini
+    llm = Gemini("llm/clients/google.key")
+
+    # task = Task(
+    #     llm,
+    #     TaskType.CODE,
+    #     "Sum of two numbers",
+    #     "Write a function that returns the sum of two numbers.",
+    #     "There is a function defined that returns the sum of two numbers.",
+    # )
+
+    # code = """
+    # def sum(a, b):
+    #     return a + b
+
+    # print(sum(1, 2))
+    # """
+
+    # output = "3"
+
+    # print(task.check_code_complete(code, output))
+
+    # task = Task(
+    #     llm,
+    #     TaskType.CODE,
+    #     "Difference of two numbers",
+    #     "Write a function that returns the difference of two numbers.",
+    #     "There is a function defined that returns the difference of two numbers. With proof that it works properly.",
+    # )
+
+    # print(task.check_code_complete(code, output))
 
 
-        
+    task = Task(
+        llm,
+        TaskType.QUESTION,
+        "Function Question",
+        "Why do we use functions in programming?",
+        "They gave a thoughtful answer to the question that is correct.",
+    )
+
+    chat = Chat()
+    chat.messages.append(Message(True, "Functions are used to encapsulate code and reuse it."))
+    
+    print(task.check_question_complete(chat))
+
+
