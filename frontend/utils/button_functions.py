@@ -18,7 +18,7 @@ import shlex
 
 IM: InterviewMaster = None
 
-safe_chars = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', " "]
+safe_chars = "abcdefghijklmnopqrstuvwxyz .,"
 
 def update_video_feed(state):
     # Run the curl command using a subprocess

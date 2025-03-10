@@ -52,6 +52,8 @@ class LLM:
         if "{{" in prompt or "}}" in prompt:
             raise ValueError(f"Keys left in prompt file {prompt_file} {prompt}")
 
+        print("Prompt:", prompt)
+
         response = self.get_basic_response(prompt)
 
         tags = self._get_tags(response)

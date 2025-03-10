@@ -1,3 +1,6 @@
+import sys 
+import io
+
 def run_code(code: str) -> str:
     old_stdout = sys.stdout
     new_stdout = io.StringIO()
