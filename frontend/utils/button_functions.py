@@ -54,6 +54,9 @@ def update_state_from_fru(state, fru):
     state["current_task"] = fru.current_task
     return state
 
+def get_task_display(fru):
+    return f"### Task {IM.task_manager.previous_tasks.__len__() + 1}: **{fru.current_task.name}**\n\n{fru.current_task.description}" + "\n\n" + fru.current_task.success_description
+
 
 def save_code(code, state):
     state["code"] = code
@@ -71,9 +74,7 @@ def submit_code(code, state):
     FRU = IM.handle_code_submission(Gemini("llm/clients/google.key"), FrontendUpdate(state["chat"], state["code"], state["code_output"], state["current_task"]))
     state = update_state_from_fru(state, FRU)
 
-    task_details = f"### Task {IM.task_manager.previous_tasks.__len__() + 1}: **{FRU.current_task.name}**\n\n{FRU.current_task.description}"
-
-    return state["code"], state["code_output"], task_details, state["chat"].to_history(), state
+    return state["code"], state["code_output"], get_task_display(FRU), state["chat"].to_history(), state
 
 
 def handle_chat(user_input, state):
@@ -86,13 +87,11 @@ def handle_chat(user_input, state):
     # Simulate an AI response (replace with your AI model here)
     FRU = IM.handle_chat_message(Gemini("llm/clients/google.key"), FrontendUpdate(chat, state["code"], state["code_output"], state["current_task"]))
     state = update_state_from_fru(state, FRU)
-
-    task_details = f"### Task {IM.task_manager.previous_tasks.__len__() + 1}: **{FRU.current_task.name}**\n\n{FRU.current_task.description}"
     # Return updated chat history and clear user input
 
     update_video_feed(state)
 
-    return state["code"], state["code_output"], task_details, state["chat"].to_history(), state, "", state["video"]
+    return state["code"], state["code_output"], get_task_display(FRU), state["chat"].to_history(), state, "", state["video"]
 
 
 def update_selected_scenario(selected_scenario, state):
@@ -116,10 +115,8 @@ def update_selected_scenario(selected_scenario, state):
     # Load scenario into InterviewMaster
     IM = InterviewMaster(Scenario(Gemini("llm/clients/google.key"), selected_scenario_file))
     FRU = IM.handle_start()
-
-    task_details = f"### Task {IM.task_manager.previous_tasks.__len__() + 1}: **{FRU.current_task.name}**\n\n{FRU.current_task.description}"
     state = update_state_from_fru(state, FRU)
 
 
 
-    return state["code"], state["code_output"], task_details, state["chat"].to_history(), state # , state['video']
+    return state["code"], state["code_output"], get_task_display(FRU), state["chat"].to_history(), state # , state['video']

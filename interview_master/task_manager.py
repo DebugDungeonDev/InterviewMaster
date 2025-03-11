@@ -32,7 +32,10 @@ class TaskManager:
             # Check if the final task is complete
             final_response = self.check_final_task_complete(llm, fru)
             if self.final_task.completed:
-                return
+                fru.current_task = Task(llm, TaskType.QUESTION, "Interview Complete",
+                    "The interview is complete. Thank you for your time.",
+                    "The interview is complete. Thank you for your time.")
+                return fru
 
         fru = self._update_task(llm, fru, response)
         
