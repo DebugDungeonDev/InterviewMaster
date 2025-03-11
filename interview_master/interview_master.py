@@ -42,8 +42,8 @@ class InterviewMaster:
         """
         
         # If current on a question task, check if the question is complete
-        if self.task_manager.current_task.task_type == TaskType.QUESTION:
-            fru = self.task_manager.update(llm, fru)
+        # if self.task_manager.current_task.task_type == TaskType.QUESTION:
+        fru = self.task_manager.update(llm, fru)
 
         vars = {
             "name": fru.current_task.name,

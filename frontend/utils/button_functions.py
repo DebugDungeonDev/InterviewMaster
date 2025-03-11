@@ -7,6 +7,7 @@ from frontend.frontend_update import FrontendUpdate
 from frontend.run_code import run_code
 from interview_master.interview_master import InterviewMaster
 from interview_master.scenario import Scenario
+from interview_master.task import TaskType
 from llm.chat import Message
 from llm.clients.gemini import Gemini
 import requests
@@ -55,7 +56,18 @@ def update_state_from_fru(state, fru):
     return state
 
 def get_task_display(fru):
-    return f"### Task {IM.task_manager.previous_tasks.__len__() + 1}: **{fru.current_task.name}**\n\n{fru.current_task.description}" + "\n\n" + fru.current_task.success_description
+    d = f"### **Task {IM.task_manager.previous_tasks.__len__() + 1}: "
+    d += f"{fru.current_task.name}** - "
+    if fru.current_task.task_type == TaskType.QUESTION:
+        d += "Question"
+    elif fru.current_task.task_type == TaskType.CODE:
+        d += "Coding"
+    else:
+        d += "ERROR TYPE UNKNOWN"
+    d += f"\n\n{fru.current_task.description}"
+    d += "\n\n" + fru.current_task.success_description
+
+    return d
 
 
 def save_code(code, state):

@@ -67,7 +67,7 @@ class Task:
             }
 
         vars = self.to_dict()
-        vars["last_chat_response"] = chat.messages[-1].message
+        vars["chat_messages"] = chat.get_last_n_messages_str(10)
 
         assert chat.messages[-1].isHuman, "Last message should be from the user."
 

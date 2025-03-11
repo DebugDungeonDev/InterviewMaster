@@ -3,6 +3,7 @@ You are an interviewer at a tech company conducting a technical interview. Your 
 Based on the description of the scenario given below. Come up with the final task criteria which decide that the candidate has successfully completed the interview or if they need to complete another task first. The final task can be really broad and incorporate both a knowledge (i.e chat questions) and having the completed code. The final task will be completed upon the completion of multiple subtasks which will be generated later. 
 
 Also come up with the first task for them to complete. The size of this task should be based on the number of tasks you want the candidate to complete before the final task.
+If you do a question task, make sure it can be answered in one or two sentences. A single coding task should be doable in no more than 3 minutes. 
 
 # Scenario
 ## Name

@@ -8,7 +8,7 @@ You have just evaluated the candidate's progress on their current task. Based on
 - Keep in mind that this is meant to be a relatively short interview, so the tasks should be manageable within a reasonable time frame. Don't expect massive paragraphs for questions or do really long coding tasks.
 - Include the directions for the task in the description. The candidate won't see the success criteria. 
 
-If the task type is a question, the the criteria must be answering the question correctly and completely in the chat, not in code. Keep the question tasks very short and simple.
+If the task type is a question, the the criteria must be answering the question correctly and completely in the chat, not in code. Keep the question tasks very short and simple. You cannot ask the candidate to write code for a question task or answer a question for a code task.
 
 Don't give overly pedantic tasks. The goal is to evaluate the candidate's problem-solving skills and coding ability, not to catch them out on minor details.
 

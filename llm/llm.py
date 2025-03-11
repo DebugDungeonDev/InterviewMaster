@@ -58,6 +58,8 @@ class LLM:
 
         tags = self._get_tags(response)
 
+        print("Tags output:", tags)
+
         return tags
     
 

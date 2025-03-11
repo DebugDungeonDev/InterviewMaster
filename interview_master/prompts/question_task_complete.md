@@ -11,8 +11,8 @@ Provide the reasoning as if the candidate is reading it. So use the second perso
 ## Expected Success Criteria
 {{success_description}}
 
-## Last Chat Response from Candidate
-{{last_chat_response}}
+## Chat History (use this to determine if the candidate answered the question correctly)
+{{chat_messages}}
 
 ## Output Format
 
